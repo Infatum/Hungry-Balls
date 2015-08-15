@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class EnemyController : MonoBehaviour {
-    public float size = 0.3f;
+    public float size = 1;
     private Vector3 originalScale;
 
     void Start()
