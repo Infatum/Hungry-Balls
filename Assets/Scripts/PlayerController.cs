@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour {
         }
         else if(difference > 1)
         {
-            size = size * (float)Math.Sqrt((double)GetRatio(col));
+            size = size + (float)Math.Sqrt((double)GetRatio(col));
         }
         Debug.Log("ratio : " + ratio);
         Debug.Log("size - " + size);
