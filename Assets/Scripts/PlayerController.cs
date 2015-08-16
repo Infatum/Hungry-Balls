@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
     public Vector3 originalScale;
     private PlayerController playerSize;
     private float ratio = 0.0f;
+    float enemysize;
 
     // Use this for initialization
     void Start() {
@@ -22,6 +23,19 @@ public class PlayerController : MonoBehaviour {
         playerSize = gameObject.GetComponent<PlayerController>();
     }
 
+    public float EnemySize
+    {
+        set
+        {
+            Collision col = new Collision();
+            enemysize = col.gameObject.GetComponent<EnemyController>().GetSize();
+            value = enemysize;
+        }
+        get
+        {
+            return enemysize;
+        }
+    }
     public float GetSize()
     {
         return size;
@@ -43,7 +57,51 @@ public class PlayerController : MonoBehaviour {
 
         rb.AddForce(movement * speed);
     }
-
+    public float GetRatio(Collision col)
+    {
+        float enemysize = col.gameObject.GetComponent<EnemyController>().GetSize();
+        float difference = playerSize.GetSize() - enemysize;
+        if (enemysize < 1)
+        {
+            return ratio = playerSize.GetSize() / enemysize;
+        }
+        else if (difference < 1)
+        {
+            return ratio = playerSize.GetSize() + difference;
+        }
+        else
+        {
+            return ratio = playerSize.GetSize() / enemysize;
+        }
+        
+    }
+    public float ScaleSizeSmall(Collision col)
+    {
+       return size = size * (float)Math.Sqrt((double)GetRatio(col));
+    }
+    public float ScaleMediumSize(Collision col)
+    {
+        float difference = playerSize.GetSize() - EnemySize;
+        Debug.Log("Size of the player :" + GetSize());
+        if (difference < 1)
+        {
+            size = size / (float)Math.Sqrt((double)GetRatio(col));
+        }
+        else if(difference > 1)
+        {
+            size = size * (float)Math.Sqrt((double)GetRatio(col));
+        }
+        Debug.Log("ratio : " + ratio);
+        Debug.Log("size - " + size);
+        return size;
+    }
+    public float ScaleBigSize(Collision col)
+    {
+        size = size * (float)Math.Sqrt((double)GetRatio(col));
+        Debug.Log("ratio : " + GetRatio(col));
+        Debug.Log("size : " + size);
+        return size;
+    }
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.CompareTag("Enemy"))
@@ -54,13 +112,30 @@ public class PlayerController : MonoBehaviour {
                 Debug.Log("collision with:" + col.gameObject.name);
                 col.gameObject.SetActive(false);
 
-                Debug.Log("" + col_obj_size + " < 1");
-                if (col_obj_size < gameObject.GetComponent<PlayerController>().GetSize())
+                Debug.Log("" + col_obj_size + " < playersize");
+                if (col_obj_size < 1)
                 {
-                    ratio = playerSize.GetSize() * col.gameObject.GetComponent<EnemyController>().GetSize();
-                    Debug.Log("ratio : " + ratio);
-                    size = size / (float)Math.Sqrt((double)ratio);
-                    Debug.Log("size" + Math.Log(ratio));
+                    //ratio = playerSize.GetSize() * col.gameObject.GetComponent<EnemyController>().GetSize();
+                    GetRatio(col);
+                    Debug.Log("ratio : " + GetRatio(col));
+                    ScaleSizeSmall(col);
+                    //size = size / (float)Math.Sqrt((double)GetRatio(col));
+
+                    Debug.Log("size after scale : " + Math.Log(ratio));
+                }
+                if(col_obj_size >= 1)
+                {
+                    if(col_obj_size < 5)
+                    {
+                        GetRatio(col);
+                        Debug.Log("ratio : " + GetRatio(col));
+                        ScaleMediumSize(col);
+                    }
+                }
+                if (col_obj_size > 5)
+                {
+                    GetRatio(col);
+                    ScaleBigSize(col);
                 }
             }
         }
