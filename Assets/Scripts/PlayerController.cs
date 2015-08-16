@@ -123,9 +123,9 @@ public class PlayerController : MonoBehaviour {
 
                     Debug.Log("size after scale : " + Math.Log(ratio));
                 }
-                if(col_obj_size >= 1)
+                if(playerSize.GetSize() >= 1)
                 {
-                    if(col_obj_size < 5)
+                    if(playerSize.GetSize() < 5)
                     {
                         GetRatio(col);
                         Debug.Log("ratio : " + GetRatio(col));
