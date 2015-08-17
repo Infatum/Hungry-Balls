@@ -63,11 +63,11 @@ public class PlayerController : MonoBehaviour {
         float difference = playerSize.GetSize() - enemysize;
         if (enemysize < 1)
         {
-            return ratio = playerSize.GetSize() / enemysize;
+            return ratio = playerSize.GetSize() * enemysize;
         }
         else if (difference < 1)
         {
-            return ratio = playerSize.GetSize() + difference;
+            return ratio = 1 + difference;
         }
         else
         {
@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour {
     }
     public float ScaleSizeSmall(Collision col)
     {
-       return size = size * (float)Math.Sqrt((double)GetRatio(col));
+       return size = size * (float)Math.Pow((double)GetRatio(col), 2d);
     }
     public float ScaleMediumSize(Collision col)
     {
