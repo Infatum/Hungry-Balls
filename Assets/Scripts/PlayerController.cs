@@ -2,25 +2,26 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using Assets.Scripts;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : BaseLogic {
 
-    public float speed;
+    //public float speed;
     private Rigidbody rb;
-    private int score = 0;
+    //private int score = 0;
     private Text gameOver;
-    public float size = 1f;
+    //public float size = 1f;
     public Vector3 originalScale;
-    private PlayerController playerSize;
+    private PlayerController player;
     private float ratio = 0.0f;
     float enemysize;
 
     // Use this for initialization
     void Start() {
         rb = GetComponent<Rigidbody>();
-        score = 0;
+        //score = 0;
         originalScale = transform.localScale;
-        playerSize = gameObject.GetComponent<PlayerController>();
+        player = gameObject.GetComponent<PlayerController>();
     }
 
     public float EnemySize
@@ -42,7 +43,7 @@ public class PlayerController : MonoBehaviour {
     }
     public void ShowScoreText()
     {
-        
+
     }
     public void Update()
     {
@@ -57,39 +58,39 @@ public class PlayerController : MonoBehaviour {
 
         rb.AddForce(movement * speed);
     }
-    public float GetRatio(Collision col)
+    public float CalculateRatio(Collision col)
     {
         float enemysize = col.gameObject.GetComponent<EnemyController>().GetSize();
-        float difference = playerSize.GetSize() - enemysize;
+        float difference = player.GetSize() - enemysize;
         if (enemysize < 1)
         {
-            return ratio = playerSize.GetSize() * enemysize;
+            return ratio = player.GetSize() * enemysize;
         }
-        else if (difference < 1)
+        if (difference < 1)
         {
-            return ratio = 1 + difference;
+            return ratio = 1 + (1 - difference);
         }
         else
         {
-            return ratio = playerSize.GetSize() / enemysize;
+            return ratio = enemysize / player.GetSize();
         }
-        
+
     }
     public float ScaleSizeSmall(Collision col)
     {
-       return size = size * (float)Math.Pow((double)GetRatio(col), 2d);
+        return size = size + (float)Math.Pow((double)CalculateRatio(col), 2d);
     }
     public float ScaleMediumSize(Collision col)
     {
-        float difference = playerSize.GetSize() - EnemySize;
+        float difference = player.GetSize() - EnemySize;
         Debug.Log("Size of the player :" + GetSize());
         if (difference < 1)
         {
-            size = size / (float)Math.Sqrt((double)GetRatio(col));
+            size = size + (float)Math.Sqrt((double)CalculateRatio(col)) * 0.2f;
         }
-        else if(difference > 1)
+        else
         {
-            size = size + (float)Math.Sqrt((double)GetRatio(col));
+            size = size + (float)Math.Sqrt((double)CalculateRatio(col)) * 0.1f;
         }
         Debug.Log("ratio : " + ratio);
         Debug.Log("size - " + size);
@@ -97,8 +98,8 @@ public class PlayerController : MonoBehaviour {
     }
     public float ScaleBigSize(Collision col)
     {
-        size = size * (float)Math.Sqrt((double)GetRatio(col));
-        Debug.Log("ratio : " + GetRatio(col));
+        size = size + (float)Math.Sqrt((double)CalculateRatio(col)) * 0.05f;
+        Debug.Log("ratio : " + CalculateRatio(col));
         Debug.Log("size : " + size);
         return size;
     }
@@ -106,37 +107,39 @@ public class PlayerController : MonoBehaviour {
     {
         if (col.gameObject.CompareTag("Enemy"))
         {
+            float palyerSize = player.GetSize();
             float col_obj_size = col.gameObject.GetComponent<EnemyController>().GetSize();
-            if (col_obj_size < playerSize.GetSize())
+            if (col_obj_size < player.GetSize())
             {
                 Debug.Log("collision with:" + col.gameObject.name);
                 col.gameObject.SetActive(false);
 
                 Debug.Log("" + col_obj_size + " < playersize");
-                if (col_obj_size < 1)
+                if (size - col_obj_size < 1)
                 {
                     //ratio = playerSize.GetSize() * col.gameObject.GetComponent<EnemyController>().GetSize();
-                    GetRatio(col);
-                    Debug.Log("ratio : " + GetRatio(col));
+                    CalculateRatio(col);
+                    Debug.Log("ratio : " + CalculateRatio(col));
                     ScaleSizeSmall(col);
                     //size = size / (float)Math.Sqrt((double)GetRatio(col));
 
                     Debug.Log("size after scale : " + Math.Log(ratio));
                 }
-                if(playerSize.GetSize() >= 1)
+                else if (player.GetSize() >= 1)
                 {
-                    if(playerSize.GetSize() < 5)
+                    if (player.GetSize() < 5)
                     {
-                        GetRatio(col);
-                        Debug.Log("ratio : " + GetRatio(col));
+                        CalculateRatio(col);
+                        Debug.Log("ratio : " + CalculateRatio(col));
                         ScaleMediumSize(col);
                     }
                 }
-                if (col_obj_size > 5)
+                if (player.GetSize() >= 5f)
                 {
-                    GetRatio(col);
+                    CalculateRatio(col);
                     ScaleBigSize(col);
                 }
+                //    switch (playerSize)
             }
         }
     }
