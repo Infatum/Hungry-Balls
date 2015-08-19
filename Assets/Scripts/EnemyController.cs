@@ -1,18 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Assets.Scripts;
 
-public class EnemyController : MonoBehaviour {
+public class EnemyController : BaseLogic {
     Rigidbody rigid;
-    public float speed;
-    public float size = 1f;
     private Vector3 originalScale;
     public GameObject target;
     public float targetDistance;
     public System.Random rand = new System.Random();
     private int chance;
     
-
+    
     void Start()
 	{
        rigid = GetComponent<Rigidbody>();

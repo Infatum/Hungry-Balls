@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts;
 
-public class EnemyAI : MonoBehaviour {
+public class EnemyAI : BaseLogic {
 
     public float patrolSpeed = 2f;
     public float chaseSpeed = 5f;

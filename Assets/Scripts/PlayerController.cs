@@ -14,7 +14,7 @@ public class PlayerController : BaseLogic {
     public Vector3 originalScale;
     private PlayerController player;
     private float ratio = 0.0f;
-    float enemysize;
+    EnemyController enemy;
 
     // Use this for initialization
     void Start() {
@@ -22,20 +22,6 @@ public class PlayerController : BaseLogic {
         //score = 0;
         originalScale = transform.localScale;
         player = gameObject.GetComponent<PlayerController>();
-    }
-
-    public float EnemySize
-    {
-        set
-        {
-            Collision col = new Collision();
-            enemysize = col.gameObject.GetComponent<EnemyController>().GetSize();
-            value = enemysize;
-        }
-        get
-        {
-            return enemysize;
-        }
     }
     public float GetSize()
     {
@@ -82,7 +68,7 @@ public class PlayerController : BaseLogic {
     }
     public float ScaleMediumSize(Collision col)
     {
-        float difference = player.GetSize() - EnemySize;
+        float difference = player.GetSize() - enemy.GetSize();
         Debug.Log("Size of the player :" + GetSize());
         if (difference < 1)
         {
