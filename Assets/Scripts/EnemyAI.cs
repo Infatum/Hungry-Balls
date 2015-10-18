@@ -35,17 +35,18 @@ public class EnemyAI : BaseLogic {
         SphereCollider col = (SphereCollider)colisionObject.collider;
         var distance = Vector3.Distance(col.gameObject.transform.position, colisionObject.transform.position);
         float agrZone = distance/col.radius;
-        if (agrZone < 0.2)
+        BaseLogic victimBaseLogic = colisionObject.gameObject.GetComponent<BaseLogic>();
+        if (agrZone < 0.8)
         {
-            AgrChance = Random.Range(5, 15);
+            AgrChance = Random.Range(2, 8) + SizeRatio(victimBaseLogic)*100;
         }
         if (agrZone < 0.5)
         {
-            AgrChance = Random.Range(20, 40);
+            AgrChance = Random.Range(10, 20) + SizeRatio(victimBaseLogic)*100;
         }
         else
         {
-            AgrChance = Random.Range(50, 80);
+            AgrChance = Random.Range(30, 45) + SizeRatio(victimBaseLogic)*100;
         }
 
     }
