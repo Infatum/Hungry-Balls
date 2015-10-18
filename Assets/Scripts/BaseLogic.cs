@@ -9,15 +9,16 @@ namespace Assets.Scripts
     /// <summary>
     /// 
     /// </summary>
-   public abstract class BaseLogic : MonoBehaviour
+    public abstract class BaseLogic : MonoBehaviour
     {
-        
+
         public float startsize = 1;
         public float size;
         public float speed;
         public int score;
         protected float coeficient;
         protected int step = 0;
+        private int steps = 0;
 
         /// <summary>
         /// 
@@ -27,7 +28,14 @@ namespace Assets.Scripts
         /// <returns></returns>
         public virtual float ScaleMethod(PlayerController player, EnemyController enemy)
         {
-            return size += CalculateCoeficient(player, enemy) * enemy.GetSize();
+            this.Step();
+            if (this.Step() >= step + 5)
+            {
+                step = Step();
+                return size += CalculateCoeficient(player, enemy) * enemy.GetSize();
+            }
+            else
+                return size;
         }
         /// <summary>
         /// Calculates the coeficients for scaling
@@ -65,6 +73,13 @@ namespace Assets.Scripts
             }
             return coeficient;
         }
+
+        public int Step()
+        {
+            steps++;
+            return steps;
+
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -74,6 +89,6 @@ namespace Assets.Scripts
         {
             return size;
         }
-        
+
     }
 }
