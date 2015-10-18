@@ -10,13 +10,20 @@ public class EnemyAI : BaseLogic {
     public float patrolWaitTime = 1f;
     public Transform[] patrolWayPoints;
 
-    private 
+    private float AgrChance;
 
 	// Use this for initialization
 	void Start()
 	{
-	
+	    
 	}
+
+    void OnCollisionStay(Collision colisionObjects)
+    {
+        
+    }
+
+    
 	
 	// Update is called once per frame
 	void Update()

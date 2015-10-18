@@ -6,14 +6,10 @@ using Assets.Scripts;
 
 public class PlayerController : BaseLogic {
 
-    //public float speed;
     private Rigidbody rb;
-    //private int score = 0;
     private Text gameOver;
-    //public float size = 1f;
     public Vector3 originalScale;
     private PlayerController player;
-    private float ratio = 0.0f;
     EnemyController enemy;
 
     // Use this for initialization
@@ -33,8 +29,7 @@ public class PlayerController : BaseLogic {
     }
     public void Update()
     {
-        transform.localScale = originalScale * size;
-
+        transform.localScale = new Vector3(size, size, size);
     }
     public void FixedUpdate()
     {
@@ -44,88 +39,22 @@ public class PlayerController : BaseLogic {
 
         rb.AddForce(movement * speed);
     }
-    public float CalculateRatio(Collision col)
-    {
-        float enemysize = col.gameObject.GetComponent<EnemyController>().GetSize();
-        float difference = player.GetSize() - enemysize;
-        if (enemysize < 1)
-        {
-            return ratio = player.GetSize() * enemysize;
-        }
-        if (difference < 1)
-        {
-            return ratio = 1 + (1 - difference);
-        }
-        else
-        {
-            return ratio = enemysize / player.GetSize();
-        }
-
-    }
-    public float ScaleSizeSmall(Collision col)
-    {
-        return size = size + (float)Math.Pow((double)CalculateRatio(col), 2d);
-    }
-    public float ScaleMediumSize(Collision col)
-    {
-        float difference = player.GetSize() - enemy.GetSize();
-        Debug.Log("Size of the player :" + GetSize());
-        if (difference < 1)
-        {
-            size = size + (float)Math.Sqrt((double)CalculateRatio(col)) * 0.2f;
-        }
-        else
-        {
-            size = size + (float)Math.Sqrt((double)CalculateRatio(col)) * 0.1f;
-        }
-        Debug.Log("ratio : " + ratio);
-        Debug.Log("size - " + size);
-        return size;
-    }
-    public float ScaleBigSize(Collision col)
-    {
-        size = size + (float)Math.Sqrt((double)CalculateRatio(col)) * 0.05f;
-        Debug.Log("ratio : " + CalculateRatio(col));
-        Debug.Log("size : " + size);
-        return size;
-    }
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.CompareTag("Enemy"))
         {
             float palyerSize = player.GetSize();
-            float col_obj_size = col.gameObject.GetComponent<EnemyController>().GetSize();
+            EnemyController collised_enemy = col.gameObject.GetComponent<EnemyController>();
+            float col_obj_size = collised_enemy.GetSize();
             if (col_obj_size < player.GetSize())
             {
                 Debug.Log("collision with:" + col.gameObject.name);
                 col.gameObject.SetActive(false);
 
                 Debug.Log("" + col_obj_size + " < playersize");
-                if (size - col_obj_size < 1)
-                {
-                    //ratio = playerSize.GetSize() * col.gameObject.GetComponent<EnemyController>().GetSize();
-                    CalculateRatio(col);
-                    Debug.Log("ratio : " + CalculateRatio(col));
-                    ScaleSizeSmall(col);
-                    //size = size / (float)Math.Sqrt((double)GetRatio(col));
-
-                    Debug.Log("size after scale : " + Math.Log(ratio));
-                }
-                else if (player.GetSize() >= 1)
-                {
-                    if (player.GetSize() < 5)
-                    {
-                        CalculateRatio(col);
-                        Debug.Log("ratio : " + CalculateRatio(col));
-                        ScaleMediumSize(col);
-                    }
-                }
-                if (player.GetSize() >= 5f)
-                {
-                    CalculateRatio(col);
-                    ScaleBigSize(col);
-                }
-                //    switch (playerSize)
+                CalculateCoeficient(player, collised_enemy);
+                Debug.Log("Coeficient = " + CalculateCoeficient(player, collised_enemy));
+                ScaleMethod(player, collised_enemy);
             }
         }
     }

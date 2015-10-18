@@ -6,37 +6,48 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    /// <summary>
+    /// 
+    /// </summary>
    public abstract class BaseLogic : MonoBehaviour
     {
+        
+        public float startsize = 1;
         public float size;
-        public float startsize;
         public float speed;
-        public float score;
+        public int score;
         protected float coeficient;
+        protected int step = 0;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="enemy"></param>
+        /// <returns></returns>
         public virtual float ScaleMethod(PlayerController player, EnemyController enemy)
         {
-            return size = player.size + enemy.size * Coeficient(coeficient);
+            return size += CalculateCoeficient(player, enemy) * enemy.GetSize();
         }
-        public virtual float Coeficient(float denominator)
-        {
-            return coeficient = score / denominator;
-
-        }
+        /// <summary>
+        /// Calculates the coeficients for scaling
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="enemy"></param>
+        /// <returns></returns>
         public float CalculateCoeficient(PlayerController player, EnemyController enemy)
         {
             if (player.GetSize() > player.startsize * 2f)
             {
-                return coeficient = enemy.GetSize() / 5;
+                return coeficient = 0.012f;
             }
             if (player.GetSize() > player.startsize * 4f)
             {
-                return coeficient = enemy.GetSize() / 8;
+                return coeficient = 0.015f;
             }
             if (player.GetSize() > player.startsize * 6f)
             {
-                return coeficient = enemy.GetSize() * 0.16f;
+                return coeficient = enemy.GetSize() * 0.016f;
             }
             else
             {
@@ -44,25 +55,25 @@ namespace Assets.Scripts
                 {
                     if (player.GetSize() <= player.startsize * 0.5f)
                     {
-                        return coeficient = enemy.GetSize() * 0.2f;
+                        return coeficient = enemy.GetSize() * 0.02f;
                     }
                     else
                     {
-                        return coeficient = enemy.GetSize() * 0.25f;
+                        return coeficient = enemy.GetSize() * 0.025f;
                     }
                 }
             }
             return coeficient;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public virtual float GetSize(float size)
         {
             return size;
         }
-        public int Step(int n)
-        {
-            int step = 0;
-            return step = n * (n + 2);
-        }
-
+        
     }
 }
