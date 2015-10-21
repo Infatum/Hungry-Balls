@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts;
 
 public class EnemyAI : BaseLogic {
@@ -8,14 +9,14 @@ public class EnemyAI : BaseLogic {
     public float chaseSpeed = 5f;
     public float chaseWaitTime = 5f;
     public float patrolWaitTime = 1f;
-    public Dictionary<float,Collision> victims;
+    public Dictionary<float,BaseLogic> victims;
 
     private float AgrChance;
 
 	// Use this for initialization
 	void Start()
 	{
-	    victims = new Dictionary<float, Collision>();
+	    victims = new Dictionary<float, BaseLogic>();
 	}
     /// <summary>
     /// Adds new victims to the Collection of victims
@@ -23,8 +24,8 @@ public class EnemyAI : BaseLogic {
     /// <param name="collision"></param>
     void OnCollisionEnter(Collision collision)
     {
-        if (collision is BaseLogic)
-        victims.Add(AgrChance, collision);
+        //if (collision is BaseLogic)
+        //victims.Add(AgrChance, collision);
     }
     /// <summary>
     /// Sets the agression zone in the enemy collider
@@ -36,19 +37,29 @@ public class EnemyAI : BaseLogic {
         var distance = Vector3.Distance(col.gameObject.transform.position, colisionObject.transform.position);
         float agrZone = distance/col.radius;
         BaseLogic victimBaseLogic = colisionObject.gameObject.GetComponent<BaseLogic>();
+        
         if (agrZone < 0.8)
         {
-            AgrChance = Random.Range(2, 8) + SizeRatio(victimBaseLogic)*100;
+            
+            victims = GameObject.FindObjectsOfType<BaseLogic>().ToDictionary(v => AgrChance = 
+            Random.Range(2, 8) + SizeRatio(victimBaseLogic));
+
         }
         if (agrZone < 0.5)
         {
-            AgrChance = Random.Range(10, 20) + SizeRatio(victimBaseLogic)*100;
+            AgrChance = Random.Range(10, 20) + SizeRatio(victimBaseLogic);
         }
         else
         {
-            AgrChance = Random.Range(30, 45) + SizeRatio(victimBaseLogic)*100;
+            AgrChance = Random.Range(30, 45) + SizeRatio(victimBaseLogic);
         }
 
+    }
+
+    public void StartFollow(GameObject obj)
+    {
+        gameObject.GetComponent<EnemyController>().target = obj;
+        
     }
     /// <summary>
     /// Sets the ratio for the enemy size and size of a victim
@@ -58,7 +69,7 @@ public class EnemyAI : BaseLogic {
     public float SizeRatio(BaseLogic victim)
     {
         float ratio = size/victim.size;
-        return ratio;
+        return ratio * 100;
     }
 	
 	// Update is called once per frame

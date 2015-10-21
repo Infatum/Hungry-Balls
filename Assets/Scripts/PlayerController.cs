@@ -52,9 +52,8 @@ public class PlayerController : BaseLogic {
                 col.gameObject.SetActive(false);
 
                 Debug.Log("" + col_obj_size + " < playersize");
-                CalculateCoeficient(player, collised_enemy);
                 Debug.Log("Coeficient = " + CalculateCoeficient(player, collised_enemy));
-                ScaleMethod(player, collised_enemy);
+                ScaleObject(player, collised_enemy);
             }
         }
     }

@@ -23,11 +23,7 @@ public class EnemyController : BaseLogic {
     {
         target = GameObject.FindWithTag("Player");
     }
-    //void LateUpdate()
-    //{
-    //    transform.position = target.transform.position;
-    //}
-
+    
     void OnCollisionEnter(Collision col)
     {
 

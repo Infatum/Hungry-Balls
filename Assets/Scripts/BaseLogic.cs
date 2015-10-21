@@ -26,16 +26,10 @@ namespace Assets.Scripts
         /// <param name="player"></param>
         /// <param name="enemy"></param>
         /// <returns></returns>
-        public virtual float ScaleMethod(PlayerController player, EnemyController enemy)
+        public virtual float ScaleObject(PlayerController player, EnemyController enemy)
         {
-            this.Step();
-            if (this.Step() >= step + 5)
-            {
                 step = Step();
                 return size += CalculateCoeficient(player, enemy) * enemy.GetSize();
-            }
-            else
-                return size;
         }
         /// <summary>
         /// Calculates the coeficients for scaling
