@@ -5,37 +5,48 @@ using Assets.Scripts;
 
 public class EnemyAI : BaseLogic {
 
+   
     public float patrolSpeed = 2f;
     public float chaseSpeed = 5f;
     public float chaseWaitTime = 5f;
     public float patrolWaitTime = 1f;
-    public SortedList<float, GameObject> victims = null;
 
+    private SortedList<float, GameObject> victims = null;
     private float agrChance;
     private float distance;
     private float agrZone;
 
-	/// <summary>
+    /// <summary>
+    /// Returns the Sorted List of potential targets
+    /// </summary>
+    public SortedList<float, GameObject> Victims
+    {
+        get { return victims; }
+    }
+
+    /// <summary>
     /// 
     /// </summary>
-	void Start()
+    void Start()
 	{
         victims = new SortedList<float, GameObject>();
 	}
     /// <summary>
-    /// 
+    /// TODO
     /// </summary>
     public float AttackZone
     {
         get { return agrZone; } 
     }
+
     /// <summary>
-    /// Returns a distance between an enemy and 
+    /// Returns a distance between an enemy and the potential victim 
     /// </summary>
     public float TargetDistance
     {
         get { return distance; }
     }
+
     /// <summary>
     /// Adds new victims to the Collection of victims
     /// </summary>
@@ -45,6 +56,12 @@ public class EnemyAI : BaseLogic {
         //TODO
     }
 
+    /// <summary>
+    /// Calculates the AgrChance for an each target 
+    /// </summary>
+    /// <param name="agrZonetion"></param>
+    /// <param name="victim"></param>
+    /// <returns></returns>
     public float AgrChance(int agrZonetion, BaseLogic victim )
     {
         switch (agrZonetion)
@@ -65,7 +82,8 @@ public class EnemyAI : BaseLogic {
         return agrChance;
     }
     /// <summary>
-    /// Sets the agression zone in the enemy collider
+    /// All the gameobjects that hit collider are cheked for their size needed to be smaller then the enemy size
+    /// Then adding all gameobjects with smaller size to the enemy's potential victims Sorted List
     /// </summary>
     /// <param name="colisionObject"></param>
     void OnCollisionStay(Collision colisionObject)
@@ -74,11 +92,11 @@ public class EnemyAI : BaseLogic {
         var enemyPosition = col.gameObject.transform.position;
         var targetPosition = colisionObject.transform.position;
         var targetBaseLogic = colisionObject.gameObject.GetComponent<BaseLogic>();
-        float agrZone = distance/col.radius;
         
         if(victims.Count < 10)
         {
             var distance = Vector3.Distance(enemyPosition, targetPosition);
+            float agrZone = distance / col.radius; 
 
             if (agrZone < 0.8)
             {
@@ -92,16 +110,19 @@ public class EnemyAI : BaseLogic {
             {
                 victims.Add(AgrChance(3, targetBaseLogic), colisionObject.gameObject);
             }
-        }
-        
-
+        }  
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="obj"></param>
     public void StartFollow(GameObject obj)
     {
         gameObject.GetComponent<EnemyController>().target = obj;
         
     }
+
     /// <summary>
     /// Sets the ratio for the enemy size and size of a victim
     /// </summary>
