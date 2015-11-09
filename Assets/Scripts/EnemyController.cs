@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using System;
 using Assets.Scripts;
 
-public class EnemyController : BaseLogic {
+public class EnemyController : BaseLogic
+{
+
     Rigidbody rigid;
     private Vector3 originalScale;
     public GameObject target;
     public float targetDistance;
     public System.Random rand = new System.Random();
     private int chance;
+   
     
     
     void Start()

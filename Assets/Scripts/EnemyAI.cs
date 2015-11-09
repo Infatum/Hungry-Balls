@@ -9,23 +9,60 @@ public class EnemyAI : BaseLogic {
     public float chaseSpeed = 5f;
     public float chaseWaitTime = 5f;
     public float patrolWaitTime = 1f;
-    public Dictionary<float,BaseLogic> victims;
+    public SortedList<float, GameObject> victims = null;
 
-    private float AgrChance;
+    private float agrChance;
+    private float distance;
+    private float agrZone;
 
-	// Use this for initialization
+	/// <summary>
+    /// 
+    /// </summary>
 	void Start()
 	{
-	    victims = new Dictionary<float, BaseLogic>();
+        victims = new SortedList<float, GameObject>();
 	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public float AttackZone
+    {
+        get { return agrZone; } 
+    }
+    /// <summary>
+    /// Returns a distance between an enemy and 
+    /// </summary>
+    public float TargetDistance
+    {
+        get { return distance; }
+    }
     /// <summary>
     /// Adds new victims to the Collection of victims
     /// </summary>
     /// <param name="collision"></param>
     void OnCollisionEnter(Collision collision)
     {
-        //if (collision is BaseLogic)
-        //victims.Add(AgrChance, collision);
+        //TODO
+    }
+
+    public float AgrChance(int agrZonetion, BaseLogic victim )
+    {
+        switch (agrZonetion)
+        {
+            case 1:
+                agrChance = Random.Range(30, 45) + SizeRatio(victim);
+                break;
+            case 2:
+                agrChance = Random.RandomRange(10, 20) + SizeRatio(victim);
+                break;
+            case 3:
+                agrChance = Random.RandomRange(2, 8) + SizeRatio(victim);
+                break;
+            default:
+                agrChance = 0;
+                break;
+        }
+        return agrChance;
     }
     /// <summary>
     /// Sets the agression zone in the enemy collider
@@ -34,25 +71,29 @@ public class EnemyAI : BaseLogic {
     void OnCollisionStay(Collision colisionObject)
     {
         SphereCollider col = (SphereCollider)colisionObject.collider;
-        var distance = Vector3.Distance(col.gameObject.transform.position, colisionObject.transform.position);
+        var enemyPosition = col.gameObject.transform.position;
+        var targetPosition = colisionObject.transform.position;
+        var targetBaseLogic = colisionObject.gameObject.GetComponent<BaseLogic>();
         float agrZone = distance/col.radius;
-        BaseLogic victimBaseLogic = colisionObject.gameObject.GetComponent<BaseLogic>();
         
-        if (agrZone < 0.8)
+        if(victims.Count < 10)
         {
-            
-            victims = GameObject.FindObjectsOfType<BaseLogic>().ToDictionary(v => AgrChance = 
-            Random.Range(2, 8) + SizeRatio(victimBaseLogic));
+            var distance = Vector3.Distance(enemyPosition, targetPosition);
 
+            if (agrZone < 0.8)
+            {
+                victims.Add(AgrChance(1, targetBaseLogic), colisionObject.gameObject);
+            }
+            if (agrZone < 0.5)
+            {
+                victims.Add(AgrChance(2, targetBaseLogic), colisionObject.gameObject);
+            }
+            else
+            {
+                victims.Add(AgrChance(3, targetBaseLogic), colisionObject.gameObject);
+            }
         }
-        if (agrZone < 0.5)
-        {
-            AgrChance = Random.Range(10, 20) + SizeRatio(victimBaseLogic);
-        }
-        else
-        {
-            AgrChance = Random.Range(30, 45) + SizeRatio(victimBaseLogic);
-        }
+        
 
     }
 

@@ -79,7 +79,7 @@ namespace Assets.Scripts
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
-        public virtual float GetSize(float size)
+        public float GetSize()
         {
             return size;
         }

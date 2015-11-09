@@ -19,10 +19,6 @@ public class PlayerController : BaseLogic {
         originalScale = transform.localScale;
         player = gameObject.GetComponent<PlayerController>();
     }
-    public float GetSize()
-    {
-        return size;
-    }
     public void ShowScoreText()
     {
 
