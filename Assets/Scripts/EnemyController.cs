@@ -5,58 +5,86 @@ using Assets.Scripts;
 
 public class EnemyController : BaseLogic
 {
-
-    Rigidbody rigid;
-    private Vector3 originalScale;
-    public GameObject target;
     public float targetDistance;
     public System.Random rand = new System.Random();
-    private int chance;
-   
-    
-    
+
+    private Rigidbody rigid;
+    private PlayerController enemy;
+    private Transform enemyPosition;
+    private Vector3 originalScale;
+    private GameObject target = null;
+    private EnemyAI enemyBrain;
+
     void Start()
-	{
-       rigid = GetComponent<Rigidbody>();
-       originalScale = transform.localScale;
-       chance = rand.Next(0, 100);
+    {
+        rigid = GetComponent<Rigidbody>();
+        originalScale = transform.localScale;
+        enemy = gameObject.GetComponent<PlayerController>();
     }
 
     void Awake()
     {
-        target = GameObject.FindWithTag("Player");
+        target = null;
+        enemyPosition = transform;
+        enemyBrain = gameObject.GetComponent<EnemyAI>();
     }
-    
+
     void OnCollisionEnter(Collision col)
     {
 
     }
-    public float GetSize()
+
+    public void StartFollow()
     {
-        return size;
+        target = enemyBrain.Victims.Values[0];
+        enemyPosition.position += enemyPosition.forward * speed * Time.deltaTime;
     }
-	
-	void Update()
-	{
-        transform.localScale = originalScale * size;
-        targetDistance = Vector3.Distance(gameObject.transform.position, target.transform.position);
-	}
-    public void OnTriggerEnter(Collider col)
+
+    void Update()
     {
-        //float horizontalFollow = transform.position
-        SphereCollider scol = (SphereCollider)col;
-        
-        PlayerController target = gameObject.GetComponent<PlayerController>();
-       if(col.gameObject.name == gameObject.GetComponent<EnemyController>().name)
+        transform.localScale = originalScale * size;
+        enemyPosition.position += enemyPosition.forward * speed * Time.deltaTime;
+        if (target)
         {
-            if (targetDistance == scol.radius - scol.radius * 0.2)
-            {
-                if (chance < 25)
-                {
-                    //Vector3 follow = new Vector3(horizontalFollow, 0.0f, verticalFollow);
-                    //rigid.AddForce()
-                }
-            }
+            targetDistance = Vector3.Distance(gameObject.transform.position, target.transform.position);
+        }
+
+        if (enemyBrain.Victims.Count == 10)
+        {
+            StartFollow();
+        }
+        else
+        {
+
         }
     }
+}
+
+
+
+class Ololo : MonoBehaviour
+{
+    Transform target; 
+    int moveSpeed = 3;
+    int rotationSpeed = 3;
+    Transform myTransform; 
+ 
+ void Awake()
+    {
+        myTransform = transform;
+    }
+    void Start()
+    {
+        target = GameObject.FindWithTag("Player").transform;
+    }
+
+    void Update()
+    {
+        myTransform.rotation = Quaternion.Slerp(myTransform.rotation,
+
+        Quaternion.LookRotation(target.position - myTransform.position), rotationSpeed * Time.deltaTime);
+
+        myTransform.position += myTransform.forward * moveSpeed * Time.deltaTime;
+    }
+
 }

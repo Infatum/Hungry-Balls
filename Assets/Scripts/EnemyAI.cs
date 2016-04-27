@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts;
 
-public class EnemyAI : BaseLogic {
-
-   
-    public float patrolSpeed = 2f;
-    public float chaseSpeed = 5f;
-    public float chaseWaitTime = 5f;
-    public float patrolWaitTime = 1f;
+public class EnemyAI : BaseLogic
+{
+    [SerializeField]
+    private float patrolSpeed = 2f;
+    [SerializeField]
+    private float chaseSpeed = 5f;
+    [SerializeField]
+    private float chaseWaitTime = 5f;
+    [SerializeField]
+    private float patrolWaitTime = 1f;
 
     private SortedList<float, GameObject> victims = null;
     private float agrChance;
@@ -70,10 +73,10 @@ public class EnemyAI : BaseLogic {
                 agrChance = Random.Range(30, 45) + SizeRatio(victim);
                 break;
             case 2:
-                agrChance = Random.RandomRange(10, 20) + SizeRatio(victim);
+                agrChance = Random.Range(10, 20) + SizeRatio(victim);
                 break;
             case 3:
-                agrChance = Random.RandomRange(2, 8) + SizeRatio(victim);
+                agrChance = Random.Range(2, 8) + SizeRatio(victim);
                 break;
             default:
                 agrChance = 0;
@@ -111,16 +114,6 @@ public class EnemyAI : BaseLogic {
                 victims.Add(AgrChance(3, targetBaseLogic), colisionObject.gameObject);
             }
         }  
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="obj"></param>
-    public void StartFollow(GameObject obj)
-    {
-        gameObject.GetComponent<EnemyController>().target = obj;
-        
     }
 
     /// <summary>
